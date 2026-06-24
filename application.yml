@@ -1,0 +1,43 @@
+server:
+  port: 7070
+  address: 127.0.0.1          # CRITICAL: loopback only — never 0.0.0.0
+  ssl:
+    enabled: true
+    key-store: classpath:certs/agent-keystore.p12
+    key-store-password: AgentKeystore2024!
+    key-store-type: PKCS12
+    key-alias: agent-localhost
+    protocol: TLS
+    enabled-protocols: TLSv1.2,TLSv1.3
+    ciphers:
+      - TLS_AES_128_GCM_SHA256
+      - TLS_AES_256_GCM_SHA384
+      - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+      - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+
+spring:
+  application:
+    name: bankmellat-token-agent
+
+agent:
+  allowed-origin: https://biz.bankmellat.ir
+  pkcs11:
+    # These are overridden at runtime based on detected OS
+    windows-library: C:/Windows/System32/ePass3003pkcs11.dll
+    linux-library: /usr/lib/libePass3003.so
+    mac-library: /usr/local/lib/libePass3003.dylib
+  tray:
+    enabled: true              # Show system tray icon
+  auto-start:
+    enabled: true              # Register as OS startup service
+
+logging:
+  level:
+    ir.bankmellat: INFO
+    org.springframework: WARN
+  file:
+    name: ${user.home}/.bankmellat-agent/agent.log
+  logback:
+    rollingpolicy:
+      max-file-size: 5MB
+      max-history: 5
